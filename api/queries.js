@@ -45,11 +45,38 @@ function getStudentSchedule(req, res, next) {
         });
 }
 
+function getStudentGroups(req, res, next) {
+    db.any('SELECT student.id, student_name, group_name FROM student JOIN "group" ON (student.group_id = "group".id)')
+        .then(function (data) {
+            let groups = {};
+            data.forEach(function (entry) {
+                console.log(entry);
+                if (!groups[entry.group_name]) {
+                    groups[entry.group_name] = [];
+                }
+                groups[entry.group_name].push({
+                    id: entry.id,
+                    student_name: entry.student_name
+                });
+            });
+            res.status(200)
+                .json({
+                    status: 'success',
+                    data: groups
+                });
+        })
+        .catch(function (err) {
+            console.log(err);
+            return next(err);
+        });
+}
+
 
 /////////////
 // Exports
 /////////////
 
 module.exports = {
-    getStudentSchedule: getStudentSchedule
+    getStudentSchedule: getStudentSchedule,
+    getStudentGroups: getStudentGroups
 };

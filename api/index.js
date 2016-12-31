@@ -19,5 +19,6 @@ router.get('/', function(req, res, next) {
 var db = require('./queries');
 
 router.get('/api/schedule/:student_id', db.getStudentSchedule);
+router.get('/api/groups', db.getStudentGroups);
 
 module.exports = router;
