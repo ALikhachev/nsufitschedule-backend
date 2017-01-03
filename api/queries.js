@@ -46,7 +46,8 @@ function getStudentSchedule(req, res, next) {
 }
 
 function getStudentGroups(req, res, next) {
-    db.any('SELECT student.id, student_name, group_name FROM student JOIN "group" ON (student.group_id = "group".id)')
+    db.any('SELECT student.id, student_name, group_name FROM student JOIN "group" ON (student.group_id = "group".id) ' +
+        'ORDER BY group_name ASC, student_name ASC')
         .then(function (data) {
             let groups = {};
             data.forEach(function (entry) {
