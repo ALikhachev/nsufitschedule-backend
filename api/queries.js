@@ -21,7 +21,7 @@ function getStudentSchedule(req, res, next) {
     const uid = parseInt(req.params.student_id);
     let evenWeek = false;
     if ('week' in req.query) {
-        evenWeek = parseInt(req.query.week) > 0;
+        evenWeek = req.query.week == 'true';
     }
     db.any(`SELECT
 	            *
