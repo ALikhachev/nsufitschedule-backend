@@ -18,13 +18,17 @@ var db = pgp(connectionString);
 /////////////////////
 
 function getStudentSchedule(req, res, next) {
-    var uid = parseInt(req.params.student_id);
+    const uid = parseInt(req.params.student_id);
+    let evenWeek = false;
+    if ('week' in req.query) {
+        evenWeek = parseInt(req.query.week) > 0;
+    }
     db.any(`SELECT
 	            *
             FROM
 	            student_full_schedule
             WHERE
-	            student_id = ${uid}
+	            (week = ${evenWeek} OR week IS NULL) AND (student_id = ${uid}
 		            OR group_id = (
 				        SELECT
 					        "group".id
@@ -32,7 +36,8 @@ function getStudentSchedule(req, res, next) {
 					        "group"
 						        JOIN student ON (student.group_id = "group".id)
 				        WHERE student.id = ${uid}
-			        )`)
+			        )
+			    )`)
         .then(function (data) {
             res.status(200)
                 .json({
