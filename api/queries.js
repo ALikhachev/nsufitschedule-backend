@@ -24,7 +24,7 @@ function getStudentSchedule(req, res, next) {
         evenWeek = req.query.week == 'true';
     }
     db.any(`SELECT
-	            *
+	            name, time, weekday, room, lecture, teacher
             FROM
 	            student_full_schedule
             WHERE
