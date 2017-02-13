@@ -19,16 +19,17 @@ var db = pgp(connectionString);
 
 function getStudentSchedule(req, res, next) {
     const uid = parseInt(req.params.student_id);
-    let evenWeek = false;
+    let weekCond = '1 = 1';
     if ('week' in req.query) {
-        evenWeek = req.query.week == 'true';
+        let evenWeek = req.query.week == 'true';
+        weekCond = `(week = ${evenWeek} OR week IS NULL)`;
     }
     db.any(`SELECT
-	            name, time, weekday, room, lecture, teacher
+	            name, time, weekday, room, lecture, teacher, week
             FROM
 	            student_full_schedule
             WHERE
-	            (week = ${evenWeek} OR week IS NULL) AND (student_id = ${uid}
+	            ${weekCond} AND (student_id = ${uid}
 		            OR group_id = (
 				        SELECT
 					        "group".id
